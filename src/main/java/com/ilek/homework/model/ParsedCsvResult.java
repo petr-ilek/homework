@@ -8,6 +8,9 @@ public class ParsedCsvResult implements Serializable {
     private List<SecurityDto> securities;
     private List<String> parseErrors;
 
+    public ParsedCsvResult() {
+    }
+
     public ParsedCsvResult(List<SecurityDto> securities, List<String> parseErrors) {
         this.securities = securities;
         this.parseErrors = parseErrors;
