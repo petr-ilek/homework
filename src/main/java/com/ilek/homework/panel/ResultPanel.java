@@ -5,6 +5,7 @@ import com.ilek.homework.model.ParsedCsvResult;
 import com.ilek.homework.model.SecurityDto;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.BootstrapDefaultDataTable;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapTextFilteredPropertyColumn;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.toolbars.BootstrapNavigationToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterForm;
@@ -28,10 +29,13 @@ public class ResultPanel extends GenericPanel<ParsedCsvResult> {
         final SecuritiesDataProvider dataProvider = new SecuritiesDataProvider(getModelObject().getSecurities());
         final BootstrapDefaultDataTable<SecurityDto, String> dataTable = new BootstrapDefaultDataTable<>("table", createColumns(),
                 dataProvider, 100);
+        final BootstrapNavigationToolbar bottomNav = new BootstrapNavigationToolbar(dataTable);
+        dataTable.setOutputMarkupId(true);
+        dataTable.addBottomToolbar(bottomNav);
 
         queue(dataTable);
         final FilterForm<SecuritiesDataProvider.IsinFilter> filterForm = new FilterForm<>("filterForm", dataProvider);
-        filterForm.add(new TextField<String>("isinField", new Model<>() {
+        filterForm.queue(new TextField<String>("isinField", new Model<>() {
             @Override
             public String getObject() {
                 return dataProvider.getFilterState().getIsin();

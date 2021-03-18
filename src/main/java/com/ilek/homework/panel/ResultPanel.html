@@ -2,11 +2,14 @@
 <body>
 <wicket:panel>
 
-    <form wicket:id="filterForm">
-<!--        todo label-->
-        <input type="text" wicket:id="isinField">
-    </form>
-    <table wicket:id="table">
+    <div>
+        <form wicket:id="filterForm" class="w-50 mx-auto mt-2">
+            <wicket:label for="isinField" class="hidden"></wicket:label>
+            <input wicket:id="isinField" class="form-control mr-sm-2" type="text" wicket:message="placeholder :searchBy">
+        </form>
+    </div>
+
+    <table wicket:id="table" class="mx-auto-ls w-95 ">
 
     </table>
 </wicket:panel>
