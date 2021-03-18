@@ -64,13 +64,15 @@ public class UploadCsvPanel extends GenericPanel<ParsedCsvResult> {
                 .maxFileCount(1)
                 .allowedFileExtensions(Collections.singletonList("csv"))
                 .showPreview(false)
-        .initialCaption(getString("selectFile"))
-        .captionClass()
-        ;
+                .initialCaption(getInitialCaption())
+                .captionClass();
 
         form.queue(fileUpload.setRequired(true));
         queue(form);
     }
 
+    protected String getInitialCaption() {
+        return getString("selectFile");
+    }
 
 }

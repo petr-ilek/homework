@@ -2,16 +2,23 @@
 <body>
 <wicket:panel>
 
-    <div>
-        <form wicket:id="filterForm" class="w-50 mx-auto mt-2">
-            <wicket:label for="isinField" class="hidden"></wicket:label>
-            <input wicket:id="isinField" class="form-control mr-sm-2" type="text" wicket:message="placeholder :searchBy">
-        </form>
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div wicket:id="uploadPanel" class="col-lg-3 col-sm-6"></div>
+
+            <div class="col-lg-1"></div>
+
+            <form wicket:id="filterForm" class="col-lg-4 col-sm-6">
+                <wicket:label for="isinField" class="hidden"></wicket:label>
+                <input wicket:id="isinField" class="form-control mr-sm-2" type="text" wicket:message="placeholder :searchBy">
+            </form>
+
+            <div class="col-lg-4"></div>
+        </div>
     </div>
 
-    <table wicket:id="table" class="mx-auto-ls w-95 ">
+    <table wicket:id="table" class="mx-auto-ls w-95 "></table>
 
-    </table>
 </wicket:panel>
 </body>
 </html>

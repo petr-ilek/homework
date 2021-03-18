@@ -6,9 +6,9 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Alert;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Modal;
+import de.agilecoders.wicket.core.markup.html.bootstrap.list.BootstrapListView;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LambdaModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -24,7 +24,7 @@ public class CsvWarningsModal extends Modal<ParsedCsvResult> {
         super.onInitialize();
         size(Size.Extra_large);
         header(new StringResourceModel("resultsWarningTitle"));
-        queue(new ListView<>("listView", LambdaModel.of(getModel(), ParsedCsvResult::getParseErrors, ParsedCsvResult::setParseErrors)) {
+        queue(new BootstrapListView<>("listView", LambdaModel.of(getModel(), ParsedCsvResult::getParseErrors, ParsedCsvResult::setParseErrors)) {
             @Override
             protected void populateItem(ListItem<String> listItem) {
                 listItem.queue(new Alert("alert", listItem.getModel()).type(Alert.Type.Warning));

@@ -2,6 +2,8 @@ package com.ilek.homework.util;
 
 import com.ilek.homework.enums.ApplicationTypes;
 import com.ilek.homework.enums.InstrumentTypes;
+import com.ilek.homework.exception.InvalidEnumValueException;
+import com.ilek.homework.exception.InvalidIsinException;
 import com.ilek.homework.model.ParsedCsvResult;
 import com.ilek.homework.model.SecurityDto;
 import com.opencsv.CSVParser;
@@ -16,6 +18,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,17 +39,15 @@ public class CsvParser {
             int line = 2;
             while ((lineInArray = reader.readNext()) != null) {
                 try {
-                    //todo allow empty values ?
                     SecurityDto securityDto = new SecurityDto(
                             parseIsin(lineInArray[0]),
                             lineInArray[1],
-                            ApplicationTypes.valueOf(lineInArray[2].toUpperCase()),
-                            InstrumentTypes.valueOf(lineInArray[3].toUpperCase()),
+                            parseEnumValues(ApplicationTypes.class, lineInArray[2].toUpperCase()),
+                            parseEnumValues(InstrumentTypes.class, lineInArray[3].toUpperCase()),
                             parseDate(lineInArray[4]));
                     securities.add(securityDto);
-                } catch (IllegalArgumentException | ParseException e) {
-                    //todo log ?
-                    errors.add("Line: " + line + ", cause: " + e.getLocalizedMessage());
+                } catch (InvalidIsinException | InvalidEnumValueException | ParseException e) {
+                    errors.add("Line: " + line + ", cause: " + e.getMessage());
                 } finally {
                     line++;
                 }
@@ -55,18 +56,30 @@ public class CsvParser {
         return new ParsedCsvResult(securities, errors);
     }
 
-    public static String parseIsin(String isin) throws IllegalArgumentException {
+    public static String parseIsin(String isin) throws InvalidIsinException {
         Pattern isinPattern = Pattern.compile("^[a-zA-Z0-9]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = isinPattern.matcher(isin);
         if(!matcher.matches()) {
-            throw new IllegalArgumentException("Invalid ISIN");
+            throw new InvalidIsinException("Invalid ISIN");
         } else {
             return isin;
         }
     }
 
+    public static <E extends Enum<E>> E parseEnumValues(Class<E> enumType, String value) throws InvalidEnumValueException {
+        try {
+            return Enum.valueOf(enumType, value);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidEnumValueException("Invalid value in column with " + enumType.getSimpleName() + ". Possible values are: " + Arrays.toString(enumType.getEnumConstants()), e);
+        }
+    }
+
     public static Date parseDate(String date) throws ParseException {
+        if(date==null || "".equals(date)) {
+            return null;
+        }
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        formatter.setLenient(false);
         return formatter.parse(date);
     }
 

@@ -45,7 +45,7 @@ public class SecuritiesDataProvider extends SortableDataProvider<SecurityDto, St
         if (SortableColumns.PROPERTY_ISIN.equals(sortParam.getProperty())) {
             comparator = Comparator.nullsFirst(Comparator.comparing(SecurityDto::getIsin));
         } else if (SortableColumns.PROPERTY_LISTING_DATE.equals(sortParam.getProperty())) {
-            comparator = Comparator.nullsFirst(Comparator.comparing(SecurityDto::getListingDate));
+            comparator = Comparator.comparing(SecurityDto::getListingDate, Comparator.nullsLast(Comparator.naturalOrder()));
         } else {
             throw new IllegalStateException("The sort param " + sortParam.getProperty() + " is not yet supported");
         }
@@ -81,8 +81,6 @@ public class SecuritiesDataProvider extends SortableDataProvider<SecurityDto, St
     }
 
     public static class IsinFilter implements Serializable {
-        public static final String ISIN = "isin";
-
         private String isin;
 
         public String getIsin() {

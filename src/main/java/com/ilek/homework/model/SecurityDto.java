@@ -62,8 +62,4 @@ public class SecurityDto implements Serializable {
         this.listingDate = listingDate;
     }
 
-    public Date getListingDateFormatted() {
-        //todo add formating date to display full year
-        return listingDate;
-    }
 }
