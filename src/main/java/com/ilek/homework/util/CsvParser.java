@@ -4,6 +4,7 @@ import com.ilek.homework.enums.ApplicationTypes;
 import com.ilek.homework.enums.InstrumentTypes;
 import com.ilek.homework.exception.InvalidEnumValueException;
 import com.ilek.homework.exception.InvalidIsinException;
+import com.ilek.homework.exception.InvalidLineException;
 import com.ilek.homework.model.ParsedCsvResult;
 import com.ilek.homework.model.SecurityDto;
 import com.opencsv.CSVParser;
@@ -39,6 +40,7 @@ public class CsvParser {
             int line = 2;
             while ((lineInArray = reader.readNext()) != null) {
                 try {
+                    checkLine(lineInArray);
                     SecurityDto securityDto = new SecurityDto(
                             parseIsin(lineInArray[0]),
                             lineInArray[1],
@@ -46,7 +48,7 @@ public class CsvParser {
                             parseEnumValues(InstrumentTypes.class, lineInArray[3].toUpperCase()),
                             parseDate(lineInArray[4]));
                     securities.add(securityDto);
-                } catch (InvalidIsinException | InvalidEnumValueException | ParseException e) {
+                } catch (InvalidLineException | InvalidIsinException | InvalidEnumValueException | ParseException e) {
                     errors.add("Line: " + line + ", cause: " + e.getMessage());
                 } finally {
                     line++;
@@ -54,6 +56,12 @@ public class CsvParser {
             }
         }
         return new ParsedCsvResult(securities, errors);
+    }
+
+    private static void checkLine(String[] lineInArray) throws InvalidLineException {
+        if(lineInArray.length!=5) {
+            throw new InvalidLineException("Line doesn't have 5 columns");
+        }
     }
 
     public static String parseIsin(String isin) throws InvalidIsinException {
@@ -70,7 +78,7 @@ public class CsvParser {
         try {
             return Enum.valueOf(enumType, value);
         } catch (IllegalArgumentException e) {
-            throw new InvalidEnumValueException("Invalid value in column with " + enumType.getSimpleName() + ". Possible values are: " + Arrays.toString(enumType.getEnumConstants()), e);
+            throw new InvalidEnumValueException("Invalid value in column " + enumType.getSimpleName() + ". Possible values are: " + Arrays.toString(enumType.getEnumConstants()), e);
         }
     }
 
